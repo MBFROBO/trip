@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Union
 import customtkinter
 from main import create_dataset, neural_model
-
+from matplotlib import pyplot as plt
 import time
 import tkinter
 import tkinter.messagebox
@@ -10,7 +10,7 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-class App(customtkinter.CTk, tkinter.Tk, create_dataset):
+class App(customtkinter.CTk, tkinter.Tk, create_dataset, neural_model):
     def __init__(self):
         super().__init__()
         # configure window
@@ -173,7 +173,7 @@ class App(customtkinter.CTk, tkinter.Tk, create_dataset):
         # speed = dialog.get_input()
 
         class dialog_frame(customtkinter.CTk):
-            def __init__(self):
+            def __init__(self, nm):
                 super().__init__()
                 self.title('Прогнозирование по входным параметрам')
                 self.geometry(f"{640}x{450}")
@@ -181,55 +181,51 @@ class App(customtkinter.CTk, tkinter.Tk, create_dataset):
                 self.grid_columnconfigure((2, 3), weight=0)
                 self.grid_rowconfigure((0, 1, 2, 3,4), weight=1)
 
-                self.entry = customtkinter.CTkEntry(self, placeholder_text="Скорость")
+                self.entry = customtkinter.CTkEntry(self, placeholder_text="Площадь полигона 0.0")
                 self.entry.grid(row=0, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry1 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry1 = customtkinter.CTkEntry(self, placeholder_text="P2O5 (мг/кг) 0.0")
                 self.entry1.grid(row=0, column=1, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry2 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry2 = customtkinter.CTkEntry(self, placeholder_text="K20 (мг/кг) 0.0")
                 self.entry2.grid(row=0, column=2, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry3 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry3 = customtkinter.CTkEntry(self, placeholder_text="S (мг/кг) 0.0")
                 self.entry3.grid(row=0, column=3, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry4 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry4 = customtkinter.CTkEntry(self, placeholder_text="pH KCl (ед) 0.0")
                 self.entry4.grid(row=1, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry5 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry5 = customtkinter.CTkEntry(self, placeholder_text="Органич. в-во (%) 0.0")
                 self.entry5.grid(row=1, column=1, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry6 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry6 = customtkinter.CTkEntry(self, placeholder_text="Mn (мг/кг) 0.0")
                 self.entry6.grid(row=1, column=2, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry7 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry7 = customtkinter.CTkEntry(self, placeholder_text="Cu (мг/кг) 0.0")
                 self.entry7.grid(row=1, column=3, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry8 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry8 = customtkinter.CTkEntry(self, placeholder_text="Ca (мг.экв/100г) 0.0")
                 self.entry8.grid(row=2, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry9 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry9 = customtkinter.CTkEntry(self, placeholder_text="Mg (мг.экв/100г) 0.0")
                 self.entry9.grid(row=2, column=1, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry10 = customtkinter.CTkEntry(self, placeholder_text="Скорость")
+                self.entry10 = customtkinter.CTkEntry(self, placeholder_text="Zn (мг/кг) 0.0")
                 self.entry10.grid(row=2, column=2, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry11 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry11 = customtkinter.CTkEntry(self, placeholder_text="Cs (Бк/кг) 0.0")
                 self.entry11.grid(row=2, column=3, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry12 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry12 = customtkinter.CTkEntry(self, placeholder_text="Ra (Бк/кг) 0.0")
                 self.entry12.grid(row=3, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry13 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry13 = customtkinter.CTkEntry(self, placeholder_text="Th (Бк/кг) 0.0")
                 self.entry13.grid(row=3, column=1, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry14 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry14 = customtkinter.CTkEntry(self, placeholder_text="Скорость (км/ч) 0.0")
                 self.entry14.grid(row=3, column=2, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry15 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry15 = customtkinter.CTkEntry(self, placeholder_text="Вне следа (кг/см^2) 0.0")
                 self.entry15.grid(row=3, column=3, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry16 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+                self.entry16 = customtkinter.CTkEntry(self, placeholder_text="По следу (кг/см^2) 0.0")
                 self.entry16.grid(row=4, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry17 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
-                self.entry17.grid(row=4, column=1, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry18 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
-                self.entry18.grid(row=4, column=2, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-                self.entry19 = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
-                self.entry19.grid(row=4, column=3, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
-
-
-
                 self.button = customtkinter.CTkButton(self, command=self.submit_forms, text='Подтвердить')
                 self.button.grid(row=5, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
+                self.nm = nm
+                # self.sidebar_frame1 = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+                self.textbox4 = customtkinter.CTkTextbox(self, width=50, height=30)
+                self.textbox4.grid(row=5, column=1,columnspan = 3,padx=(10, 10), pady=(20, 20), sticky="nsew")
+
             def submit_forms(self):
 
-                speed = self.entry.get()
+                entr = self.entry.get()
                 entr1 = self.entry1.get()
                 entr2 = self.entry2.get()
                 entr3 = self.entry3.get()
@@ -246,25 +242,39 @@ class App(customtkinter.CTk, tkinter.Tk, create_dataset):
                 entr14 = self.entry4.get()
                 entr15 = self.entry5.get()
                 entr16 = self.entry6.get()
-                entr17 = self.entry7.get()
-                entr18 = self.entry8.get()
-                entr19 = self.entry9.get()
 
-        d = dialog_frame()
+                List = [entr14, entr15, entr16, entr,
+                        entr1, entr2, entr3, entr4,
+                        entr5, entr6, entr7, entr8,
+                        entr9, entr10, entr11, entr12,
+                        entr13]
+                
+                try: 
 
+                    _res = self.nm.results(List)
+                    
+                    if _res[0] == 0:
+                        self.textbox4.insert("0.0", 'По данным параметрам нужно ставить шины СТАНДАРТНОГО ДАВЛЕНИЯ')
+                    elif _res[0] == 1:
+                        self.textbox4.insert("0.0", 'По данным параметрам нужно ставить шины ПОНИЖЕННОГО ДАВЛЕНИЯ')
+                    else:
+                       self.textbox4.insert("0.0", 'Не удалось определить. Измените входные данные и повторите попытку') 
+                except Exception as e:
+                    print('Error ',e)
 
+        d = dialog_frame(self.nm)
 
 
     def learned(self):
-        cr = create_dataset()
-        cr.data_ground_config()
-        x_train_trip, x_test_trip, y_train_trip, y_test_trip  = cr.data_trip_config()
-        nm = neural_model(x_test_trip, x_train_trip, y_train_trip, y_test_trip)
-        nm.neural_model()
-        gen = nm.learn() 
+        self.cr = create_dataset()
+        self.cr.data_ground_config()
+        x_train_trip, x_test_trip, y_train_trip, y_test_trip  = self.cr.data_trip_config()
+        self.nm = neural_model(x_test_trip, x_train_trip, y_train_trip, y_test_trip)
+        self.nm.neural_model()
+        gen = self.nm.learn() 
         for i in gen:
             self.textbox1.insert("0.0", f'Epoch: {str(i[0] + 1)} Loss: {str(i[1])}\n')
-            
+        plt.show()
 
 if __name__ == "__main__":
     app = App()

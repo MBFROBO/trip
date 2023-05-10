@@ -31,7 +31,6 @@ class create_dataset:
         for i in x_train_trip:
             concat_x_train_trip.append(list(i) + list(self.data_ground[0]))
         concat_x_train_trip = np.array(concat_x_train_trip).astype('float32')
-
         concat_x_test_trip = []
         for i in x_test_trip:
             concat_x_test_trip.append(list(i) + list(self.data_ground[0]))
@@ -49,7 +48,7 @@ class neural_model:
     def __init__(self, X_test = None, X_train = None, 
                  y_train = None, y_test = None):
 
-        self.input_num = 20
+        self.input_num = 17
         self.num_hidden = 42
         self.num_hidden2 = 21
         self.num_out = 2
@@ -84,9 +83,9 @@ class neural_model:
         h_l1 = tf.add(tf.matmul(dataset,self.weights[0]), self.biases[0])
         h_l1 = tf.nn.relu(h_l1)
         h_l2 = tf.add(tf.matmul(h_l1,self.weights[1]), self.biases[1])
-        h_l2 = tf.nn.relu(h_l2)
+        h_l2 = tf.nn.sigmoid(h_l2)
         h_l3 = tf.add(tf.matmul(h_l2,self.weights[2]), self.biases[2])
-        h_l3 = tf.nn.softmax(h_l3)
+        h_l3 = tf.nn.sigmoid(h_l3)
         out_layer = tf.add(tf.matmul(h_l3, self.weights[3]), self.biases[3])
         
         return out_layer
@@ -98,14 +97,14 @@ class neural_model:
         return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.forward_pass(self.X_batch),labels=np.array(self.y_batch)))
 
     def learn(self):
-        
-        self.X_train = np.array(self.X_train).reshape(-1, 20)
+
+        self.X_train = np.array(self.X_train).reshape(-1, 17)
         self.X_train = self.X_train.astype('float32')
 
         # self.y_train = np.array(self.y_train).reshape(-1,1)
         self.y_train = self.y_train.astype('int32')
         optimizer = optimizers.Adam(0.001)
-
+        loss_data = []
 
         for epoch in range(self.epoch):
 
@@ -118,20 +117,27 @@ class neural_model:
             self.y_batch = self.y_train[(i + 1) * self.batch_size:]
             optimizer.minimize(self.loss, [self.weights,self.biases])
             print('Epoch: ' + str(epoch + 1) + ' Loss: ' + str(self.loss()))
+            loss_data.append(self.loss().numpy())
 
             yield (epoch, self.loss())
 
-    def results(self):
-        if self.X_test is not None:
+        plt.figure('График функции потерь')
+        plt.plot(loss_data)
+        plt.ylabel('loss')
 
-            self.X_test = np.array(self.X_test).reshape(-1, 20)
-            self.X_test = self.X_test.astype('float32')
+    def results(self, test):
 
-            self.results = tf.nn.log_softmax(self.forward_pass(self.X_test))
+        if test is not None:
+
+            test = np.array(test).reshape(-1, 17)
+            test = test.astype('float32')
+
+            self.results = tf.nn.log_softmax(self.forward_pass(test))
 
             self.current_prediction = tf.argmax(self.results,1)
             self.current_prediction = np.array(self.current_prediction)
             print(self.current_prediction)
+            return self.current_prediction
 
     def plot(self):
         pass
