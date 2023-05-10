@@ -98,6 +98,7 @@ class neural_model:
         return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.forward_pass(self.X_batch),labels=np.array(self.y_batch)))
 
     def learn(self):
+        
         self.X_train = np.array(self.X_train).reshape(-1, 20)
         self.X_train = self.X_train.astype('float32')
 
@@ -118,6 +119,8 @@ class neural_model:
             optimizer.minimize(self.loss, [self.weights,self.biases])
             print('Epoch: ' + str(epoch + 1) + ' Loss: ' + str(self.loss()))
 
+            yield (epoch, self.loss())
+
     def results(self):
         if self.X_test is not None:
 
@@ -130,15 +133,5 @@ class neural_model:
             self.current_prediction = np.array(self.current_prediction)
             print(self.current_prediction)
 
-# if __name__ == '__main__':
-
-#     cr_data = create_dataset()
-#     data_ground = cr_data.data_ground_config()
-#     x_train_trip, x_test_trip, y_train_trip, y_test_trip  = cr_data.data_trip_config()
-#     _neural_model = neural_model(X_test=x_test_trip,
-#                                  X_train= x_train_trip,
-#                                  y_train= y_train_trip,
-#                                  y_test= y_test_trip)
-#     _neural_model.neural_model()
-#     _neural_model.learn()
-#     # cr_data.print_data()
+    def plot(self):
+        pass
